@@ -1,0 +1,19 @@
+# Replays - don't track
+replays/
+match_seed*.cn
+match_seed*.json
+match_seed*.log
+
+# Python cache
+__pycache__/
+*.py[cod]
+*.egg-info/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# System
+.DS_Store
+Thumbs.db
