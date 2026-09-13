@@ -19,21 +19,21 @@ class SpriteTemplateCutter:
         self.templates = {
             "shoes": {
                 "name": "Buty",
-                "frame": (120, 544, 80, 96),  # 2x większy
+                "frame": (100, 530, 135, 110),  # 2x większy
                 "color": "#e74c3c",
                 "fill_color": "#8B0000",
                 "z_order": 1
             },
             "legs": {
                 "name": "Nogi (kolano→pas)",
-                "frame": (96, 320, 128, 224),  # 2x większy
+                "frame": (85, 450, 160, 90),  # 2x większy
                 "color": "#f39c12",
                 "fill_color": "#8B4500",
                 "z_order": 2
             },
             "shorts": {
                 "name": "Spodenki",
-                "frame": (80, 288, 160, 80),  # 2x większy
+                "frame": (85, 300, 160, 170),  # 2x większy
                 "color": "#3498db",
                 "fill_color": "#00008B",
                 "z_order": 3
