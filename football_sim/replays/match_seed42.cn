@@ -1,0 +1,306 @@
+# FOOTBALL SIM — chess notation v1
+FIELD 25x17
+SEED 42
+
+INIT h1=`i h2=ec h3=eg h4=ek h5=eo h6=jc h7=jg h8=jk h9=jo h10=mi h11=lk
+INIT a1=zi a2=uc a3=ug a4=uk a5=uo a6=pc a7=pg a8=pk a9=po a10=ng a11=nk
+BALL h10
+
+A1
+T3 h2=fd h3=fh h4=fj h5=fn h6=kd h7=kh h8=kj h9=kn h11=lj a2=vd a3=vh a4=vj a5=vn a6=od a7=oh a8=oj a9=on a11=nj CT:a11=1
+DEC h10 CONTINUE_DRIBBLE
+T4 h10=ni CT:a7=1 CT:a8=1 CT:a11=2
+T5 CT:a7=2 CT:a8=2 CT:a11=3
+T6 h2=ge h3=gh h4=gi h5=gm h6=le h7=lh h8=li h9=lm a2=we a3=wh a4=wi a5=wm a6=pe a7=nh CT:a7=3 a8=oi CT:a8=3 a9=pm CT:a11=4
+T7 CT:a7=4 CT:a8=4 CT:a11=5
+T8 h10=oh CT:a7=5 CT:a8=5 CT:a10=1 CT:a11=0
+DUEL h10va7 ATK=16 DEF=9 WIN=h10
+DUEL h10va8 ATK=19 DEF=13 WIN=h10
+T9 h2=hf h3=hg h4=hi h5=hl h6=me h7=mg h8=mi h9=ml a2=wf a3=wg a5=wl a6=pf a7=ni CT:a7=0 a8=mh CT:a8=0 a9=pl CT:a10=2
+T10 CT:a7=1 CT:a10=3
+T11 CT:a7=2 CT:a10=4
+T12 h3=hh h5=hk h6=mf h7=lg h8=mj h10=pi a3=wh a5=wk a6=pg CT:a7=0 a9=pk CT:a10=0
+T15 h7=mg a6=ph CT:a6=1 a9=pj CT:a9=1
+T16 h10=qi CT:a6=2 CT:a9=2
+T17 CT:a6=3 CT:a9=3
+T18 h7=lg a6=qh CT:a6=4 a9=qj CT:a9=4
+T19 CT:a6=5 CT:a9=5
+DUEL h10va6 ATK=24 DEF=6 WIN=h10
+DUEL h10va9 ATK=22 DEF=11 WIN=h10
+T20 h10=ri a6=qi CT:a6=0 a9=qk CT:a9=0
+T21 h7=mg CT:a6=1
+T22 CT:a6=2
+T23 CT:a6=3
+T24 h7=lg h10=si a2=vg a3=vi CT:a6=0
+T27 h7=mg a2=uh a3=ui
+T28 h10=ti CT:a2=1 CT:a3=1
+T29 CT:a2=2 CT:a3=2
+T30 h7=lg a2=th CT:a2=3 a3=tj CT:a3=3
+T31 CT:a2=4 CT:a3=4
+T32 h10=ui CT:a2=5 CT:a3=5
+DUEL h10va2 ATK=16 DEF=17 WIN=a2
+T33 h7=mg a2=uh CT:a2=0 a3=uj CT:a3=6
+T34 CT:h10=1
+T35 CT:h10=2
+PASS a2>a8 COMPLETE
+DEC a2 PASS>a8
+A2
+T0 h2=ig h3=ii h4=ih h5=ij h6=lg h7=lh h8=li h9=lk h10=th CT:h10=3 a2=ti a3=tj a4=vi a5=vk
+END A1 SCORE 0-0
+
+T1 CT:h6=1 CT:h7=1 CT:h8=1 CT:h10=0
+T2 CT:h6=2 CT:h7=2 CT:h8=2
+T3 h2=jh h3=ji h4=ii h5=hj h6=mg CT:h6=3 h7=lg CT:h7=3 h8=ki CT:h8=0 h9=kk h10=sg a3=si a4=ui a5=uj
+DEC a8 CONTINUE_DRIBBLE
+T4 CT:h6=0 CT:h7=0 CT:h8=1 CT:h11=1 a8=li
+T5 CT:h8=2 CT:h11=2
+T6 h2=kh CT:h2=1 h3=ih h4=jh h5=ii h6=nh h7=kg h8=kj CT:h8=3 h9=lk h10=rg CT:h11=3 a3=rh a4=th a5=tk
+T7 CT:h2=2 CT:h8=4 CT:h11=4
+T8 CT:h2=3 CT:h4=1 CT:h8=5 CT:h11=5 a8=ki
+DUEL a8vh8 ATK=14 DEF=19 WIN=h8
+T9 h2=ji CT:h2=4 h3=hg h4=kh CT:h4=2 h5=jh CT:h5=1 h6=mh h7=lh CT:h7=1 h8=jj CT:h8=0 h9=mj h10=qg CT:h11=6 a4=si a5=sk
+T10 CT:a3=0 CT:a8=1
+T11 CT:a8=2
+PASS h8>h6 COMPLETE
+DEC h8 PASS>h6
+T12 h2=ih h3=hh h4=ji h5=ii h6=mg h7=mh h8=kj h9=mk h10=pg a3=qh a4=rh a5=rk CT:a8=3
+T13 CT:a8=0 CT:a10=1
+T14 CT:a10=2
+T15 h2=hg h3=gg h4=ih h5=hj h7=lg h10=og h11=li a3=pg a4=qg a5=qj CT:a10=3 a11=mi
+T16 h6=nh CT:a7=1 CT:a10=4 CT:a11=1
+T17 CT:a7=2 CT:a10=5 CT:a11=2
+DUEL h6va10 ATK=11 DEF=14 WIN=a10
+T18 h2=hf h3=hg h4=hi h7=mg h10=nf h11=lj a3=oh CT:a3=1 a4=ph a5=pi CT:a7=3 CT:a10=0 a11=nj CT:a11=0
+T19 CT:h2=0 CT:h4=0 CT:h5=0 CT:h6=1 CT:h7=2 CT:h10=1 CT:h11=0
+PASS a10>a8 COMPLETE
+DEC a10 PASS>a8
+T20 CT:h6=2 CT:h7=3 CT:h10=0 a10=mh
+T21 h2=ig h3=ih h4=ij h5=gk h6=mi CT:h6=0 h7=lh CT:h7=4 CT:h8=1 h9=lk h10=mg CT:h11=1 a3=pg a4=qh a5=qj
+T22 CT:h7=5 CT:h8=2 CT:h11=2
+DUEL a8vh7 ATK=19 DEF=17 WIN=a8
+T23 h7=li CT:h7=0 CT:h8=3 CT:h11=3
+T24 h2=jh CT:h2=1 h3=ii CT:h3=1 h4=jj CT:h4=1 h5=hj h6=lh CT:h8=4 h9=kk h10=lg CT:h11=0 a3=qg a4=ri a5=rk a8=ji
+T25 CT:h2=2 CT:h3=2 CT:h4=2 CT:h8=5
+T26 CT:h2=3 CT:h3=3 CT:h4=3 CT:h8=6
+T27 h2=ih CT:h2=4 h3=ij CT:h3=4 h4=ii CT:h4=4 h5=hi h6=ki CT:h6=1 CT:h8=7 h9=lk a3=rh
+T28 CT:h2=5 CT:h3=0 CT:h4=5 CT:h6=2 CT:h8=0 a8=jh
+DUEL a8vh2 ATK=14 DEF=23 WIN=h2
+T29 CT:h2=0 CT:h4=6 CT:h6=3
+T30 h3=hj h4=hh h5=gi h6=lh h9=mk a3=qh CT:a3=0 a4=qj a5=rj CT:a7=0 CT:a8=1
+T31 CT:a8=2
+PASS h2>h11 COMPLETE
+DEC h2 PASS>h11
+T32 h2=ji CT:a8=3
+T33 h3=hi h4=ii h5=hj h6=mg h9=ml a3=pg a4=pi a5=qj CT:a8=0
+A3
+T0 h3=hh h4=hi h5=hk h6=mf h11=mi a3=oh a4=oi a5=pi CT:a7=1 CT:a10=1 CT:a11=1
+END A2 SCORE 0-0
+
+T1 CT:a7=2 CT:a10=2 CT:a11=2
+T2 CT:a7=3 CT:a10=3 CT:a11=3
+T3 a3=nh CT:a3=1 a4=oh CT:a7=4 CT:a10=4 CT:a11=4
+DEC h11 CONTINUE_DRIBBLE
+T4 h11=mj CT:a3=0 CT:a7=5 CT:a10=0 CT:a11=5
+DUEL h11va11 ATK=20 DEF=6 WIN=h11
+T5 CT:a7=6 a11=nk CT:a11=0
+T6 h4=hj h5=hl a3=mi CT:a3=1 a4=nh CT:a7=7
+T7 CT:a3=2 CT:a7=8
+T8 h11=nj CT:a3=3 CT:a7=9
+T9 a3=mj CT:a3=4 a4=mi CT:a4=1 CT:a7=10
+T10 CT:a3=5 CT:a4=2 CT:a7=11
+DUEL h11va3 ATK=18 DEF=22 WIN=a3
+T11 CT:a3=0 CT:a4=3 CT:a7=12
+PASS a3>a8 COMPLETE
+DEC a3 PASS>a8
+T12 h3=ii h4=ij CT:h4=0 h5=ik h6=lf CT:h6=0 CT:h7=1 CT:h8=1 h9=lk CT:h9=1 h11=mj CT:h11=1 a3=lj a4=nj a5=qj
+T13 CT:h2=1 CT:h3=1 CT:h7=0 CT:h8=0 CT:h9=0 CT:h11=0
+T14 CT:h2=2 CT:h3=2
+T15 CT:h2=3 h3=ih CT:h3=3 h4=jj h5=jk h6=kg CT:h6=1 h11=mi a4=oi a5=rj
+T16 CT:h2=4 CT:h3=4 CT:h4=1 CT:h6=0 a8=ii
+T17 CT:h2=5 CT:h3=5 CT:h4=2
+DUEL a8vh3 ATK=16 DEF=20 WIN=h3
+T18 CT:h2=6 h3=hh CT:h3=0 h4=ij CT:h4=3 h6=kh h9=mj h11=lh a4=pi a5=rk
+T19 CT:a4=0 CT:a7=0 CT:a8=1
+PASS h3>h5 INTERCEPTED
+DEC h3 PASS>h5
+T20 h3=ih CT:a8=2
+T21 CT:h2=7 CT:h3=1 h4=hi CT:h4=4 h5=ij CT:h5=1 h6=ki h9=mk h11=mi a4=qh
+T22 CT:h2=8 CT:h3=2 CT:h4=5 CT:h5=2
+DUEL a8vh4 ATK=16 DEF=17 WIN=h4
+T23 CT:h2=9 CT:h3=3 CT:h4=0 CT:h5=3
+PASS h4>h10 COMPLETE
+DEC h4 PASS>h10
+T24 h4=hh h5=hj h6=lh h11=mj a4=pi a5=qj CT:a8=3
+T25 CT:a8=0 CT:a10=1
+T26 CT:a10=2
+T27 h6=mg h11=mi a4=oh a5=pk CT:a10=3
+T28 h10=lh CT:a10=4
+T29 CT:a10=5
+T30 h6=mf h11=mj a4=nh a5=oj CT:a10=6
+T31 CT:a10=7
+T32 h10=mi CT:a3=1 CT:a4=1 CT:a7=1 CT:a10=8
+T33 h5=hk h9=ml h11=lk CT:a3=2 a4=mg CT:a4=0 a5=nj CT:a5=1 CT:a7=2 CT:a10=9
+T34 CT:a3=3 CT:a5=2 CT:a7=3 CT:a10=10
+T35 CT:a3=4 CT:a5=3 CT:a7=4 CT:a10=11
+A4
+T0 h5=hj h6=me h9=mk h10=nh h11=kk CT:a3=0 a4=ng CT:a4=1 a5=mi CT:a5=4 CT:a7=5 CT:a10=12
+END A3 SCORE 0-0
+
+DUEL h10va7 ATK=22 DEF=6 WIN=h10
+T1 CT:a4=2 CT:a5=5 a7=nj CT:a7=0 CT:a10=13
+DUEL h10va5 ATK=21 DEF=15 WIN=h10
+T2 CT:a4=3 CT:a5=0 CT:a10=14
+T3 h11=lk a2=uh a4=mg CT:a4=4 a6=ph a8=jh a9=pk CT:a10=15
+DEC h10 CONTINUE_DRIBBLE
+T4 h10=oi CT:a4=0 CT:a6=1 CT:a7=1 CT:a10=0
+T5 CT:a6=2 CT:a7=2
+T6 h5=hk h6=mf h9=ml h11=kk a2=vg a4=nh CT:a4=1 a6=oh CT:a6=3 CT:a7=3 a8=kh a9=pl
+T7 CT:a4=2 CT:a6=4 CT:a7=4
+T8 h10=pi CT:a4=0 CT:a6=5 CT:a7=0
+DUEL h10va6 ATK=20 DEF=5 WIN=h10
+T9 h11=lk a2=wf a4=oi CT:a4=1 a6=ph CT:a6=0 a8=lh
+T10 CT:a4=2
+T11 CT:a4=3
+T12 h10=qi h11=kk a4=pi CT:a4=4 a8=mg a9=qk
+T13 CT:a4=5
+DUEL h10va4 ATK=23 DEF=18 WIN=h10
+T14 CT:a4=0
+T15 h11=lk CT:a6=1 a8=nh a9=qj CT:a9=1
+T16 h10=ri CT:a6=0 CT:a9=2
+T17 CT:a9=3
+T18 h11=kk a8=oi a9=rj CT:a9=4
+T19 CT:a9=5
+DUEL h10va9 ATK=22 DEF=6 WIN=h10
+T20 h10=si a9=rk CT:a9=0
+T21 h11=lk a2=vg a8=oj
+T24 h10=ti h11=kk a2=uh CT:a2=1 a8=ok
+T25 CT:a2=2
+T26 CT:a2=3
+T27 h11=lk a2=th CT:a2=4 a8=oj
+T28 h10=ui CT:a2=5
+DUEL h10va2 ATK=24 DEF=14 WIN=h10
+T29 CT:a2=0
+T30 h11=kk a8=ok
+T32 h10=vi
+T33 h11=lk a8=oj
+A5
+T0 h10=wi h11=kk a8=ok
+END A4 SCORE 0-0
+
+T3 h2=ii h7=lh h8=li h11=lk a8=pj a10=ng
+SHOT h10 VAL=5 GOAL
+DEC h10 SHOOT
+T0 h2=ec CT:h2=0 h3=eg CT:h3=0 h4=ek h5=eo CT:h5=0 h6=jc h7=jg h8=jk h9=jo h10=lg a2=uc a3=ug a4=uk a5=uo a6=pc a7=pg a8=pk a9=po a10=mi
+T6 h2=dd h5=dn h6=kd h7=kh h8=kj h9=kn h11=lj CT:h11=1 a8=oj
+T7 CT:h11=2
+T8 CT:h7=1 CT:h8=1 CT:h11=3 a10=li
+T9 h2=ce h5=cm h6=ld h7=lh CT:h7=2 h8=ki CT:h8=2 h9=ln CT:h11=4 a8=nj
+T10 CT:h7=3 CT:h8=3 CT:h11=5
+DUEL a10vh11 ATK=16 DEF=9 WIN=a10
+T11 CT:h7=4 CT:h8=4 h11=lk CT:h11=0
+T12 h2=cf h5=cl h7=kg CT:h7=5 h8=jh CT:h8=5 CT:h10=1 a8=mi a10=kh
+DUEL a10vh7 ATK=17 DEF=14 WIN=a10
+DUEL a10vh8 ATK=22 DEF=15 WIN=a10
+T13 h7=kf CT:h7=0 h8=ji CT:h8=0 CT:h10=2
+T14 CT:h10=3
+T15 h5=ck h6=ke h9=km CT:h10=4
+T16 CT:h10=0 a10=jh
+T18 h5=cj h6=jf h9=jl
+T20 a10=ii
+T21 h5=ck h6=ig h9=ik a8=mj
+T24 h6=hh CT:h6=1 h9=hj CT:h9=1 a10=hi
+T25 CT:h6=2 CT:h9=2
+T26 CT:h6=3 CT:h9=3
+T27 h6=gh CT:h6=4 h9=gi CT:h9=4
+T28 CT:h6=0 CT:h9=5 a10=gj
+DUEL a10vh9 ATK=21 DEF=13 WIN=a10
+T29 h9=hi CT:h9=0
+T30 h2=dg h6=gi CT:h6=1
+T31 CT:h6=2
+T32 CT:h6=3 a10=fi
+T33 h2=eh CT:h2=1 h6=fh CT:h6=4
+T34 CT:h2=2 CT:h6=5
+DUEL a10vh6 ATK=21 DEF=8 WIN=a10
+T35 CT:h2=3 h6=fg CT:h6=0
+A6
+T0 h2=dh CT:h2=4 h5=dj CT:h5=1 a10=ei
+END A5 SCORE 1-0
+
+T1 CT:h2=5 CT:h5=2
+DUEL a10vh2 ATK=20 DEF=11 WIN=a10
+T2 h2=di CT:h2=0 CT:h5=3
+T3 h3=eh CT:h3=1 h4=dk h5=ej CT:h5=4 a3=th a11=nj
+SHOT a10 VAL=5 GOAL
+DEC a10 SHOOT
+T0 h2=ec h3=eg CT:h3=0 h4=ek h5=eo CT:h5=0 h6=jc h7=jg h8=jk h9=jo h10=mi a3=ug a8=pk a10=ng a11=nk
+T6 h3=fh h4=fj h5=fn a3=vh a8=oj a11=nj CT:a11=1
+T7 CT:a11=2
+T8 h10=ni CT:a8=1 CT:a11=3
+T9 h3=gh h4=gi h5=gm a3=wh a8=oi CT:a8=2 CT:a11=4
+T10 CT:a8=3 CT:a11=5
+DUEL h10va11 ATK=23 DEF=12 WIN=h10
+T11 CT:a8=4 a11=nk CT:a11=0
+T12 h3=hg h4=hi h5=hl h10=oh a3=wg CT:a7=1 a8=nh CT:a8=5 CT:a10=1
+DUEL h10va8 ATK=24 DEF=14 WIN=h10
+T13 CT:a7=2 a8=ni CT:a8=0 CT:a10=2
+T14 CT:a7=3 CT:a10=3
+T15 h5=hk CT:a7=4 CT:a10=4
+T16 h10=pi CT:a7=0 CT:a10=0
+T18 h3=hh a3=wh
+T20 h10=qi
+T24 h10=ri
+T28 h10=si
+T30 a3=vi
+T32 h10=ti
+T33 a3=ui CT:a3=1
+T34 CT:a3=2
+T35 CT:a3=3
+A7
+T0 h3=hg h5=hj h10=uh a3=th CT:a3=4
+END A6 SCORE 1-1
+
+T1 CT:a3=5
+DUEL h10va3 ATK=21 DEF=10 WIN=h10
+T2 CT:a3=0
+T3 a2=vd a4=uj a5=vn a6=od a7=ph a9=on
+SHOT h10 VAL=15 SAVED
+DEC h10 SHOOT
+T4 h10=vi CT:a4=1
+T6 h3=ih h4=ii h5=ik h10=uh a2=ue a4=ti a5=um a6=ne a7=oh a9=nm
+T9 h3=jh h4=ji h5=jl h10=tg a2=tf a4=si a5=tl a6=mf a7=nh a9=ml
+T12 h3=ig h4=jj h5=ik h10=sg a2=sf a4=ri a5=sk a7=mh
+T15 h3=jf h4=kk h5=jj h10=rg a2=rf a5=rk
+T18 h4=kj h5=ji h10=qg
+T21 h4=jj h5=jh h10=pg
+T24 h4=ji h5=ih h10=og
+T27 h3=ig h4=jj h5=jh h10=nf
+T30 h3=jf h4=ji h5=ih h10=mg
+T33 h3=ig h4=jj h5=jh h10=lg
+A8
+T0 h3=jf h4=ji h5=ih
+END A7 SCORE 1-1
+
+T3 h3=ig h4=jj h5=jh h6=jd h7=ih h9=in h11=lj
+PASS a1>a6 COMPLETE
+T5 CT:h10=1
+T6 h3=jg h4=ji h5=kg h6=ke h7=jh h8=ij h9=jm h10=lf CT:h10=2 h11=li a2=re a4=rh a5=rj a7=mg a9=mk a10=nf
+T7 CT:h10=3
+T8 CT:h5=1 CT:h10=4 a6=lg
+T9 h3=kf CT:h3=1 h4=jj h5=kh CT:h5=2 h6=je h7=jg h8=ji h9=jl h10=kg CT:h10=5 a10=ng
+DUEL a6vh10 ATK=14 DEF=9 WIN=a6
+T10 CT:h3=2 CT:h5=3 CT:h10=0
+T11 CT:h3=3 CT:h5=4
+T12 h3=lg CT:h3=4 h4=ii h5=ki CT:h5=5 h6=jf h7=jh h8=ih h9=jk h11=lj a2=rf a4=ri a6=lh
+DUEL a6vh5 ATK=16 DEF=19 WIN=h5
+T13 CT:h3=5 CT:h5=0
+T14 CT:a4=0 CT:a6=1
+T15 h3=kh h4=hi h6=kf h7=jg h8=ji h9=kl a2=qg a4=qj a5=sk a6=mi CT:a6=0 a7=lh CT:a7=1 a9=lk
+DEC h5 CONTINUE_DRIBBLE
+T16 h5=li CT:a6=1 CT:a7=2
+T17 CT:a6=2 CT:a7=3
+T18 h3=jh h6=lf h7=kh h8=kj h9=ll a2=ph a4=pi a5=tk a6=nh CT:a6=0 a7=ki CT:a7=4 a9=mj CT:a9=1
+T19 CT:a7=5 CT:a9=2
+T20 h5=mi CT:a6=1 CT:a7=0 CT:a8=1 CT:a9=3
+T21 h3=ih h6=mf h7=lh h8=li h9=ml a2=pg a4=pj a5=uk a6=oi CT:a6=0 a7=kh CT:a8=2 a9=nj CT:a9=4
+T22 CT:a8=3 CT:a9=5
+END A8 SCORE 1-1
