@@ -44,7 +44,7 @@ from core.resolver import (
     resolve_gk_save as _orig_gk_save,
     resolve_ground_duel as _orig_ground_duel,
 )
-from render.pygame_view import PitchView
+from render.pygame_view import PitchView, register_teams, show_duel_intro
 
 
 # ══════════════════════════════════════════════════════════════════
@@ -409,6 +409,10 @@ def choose_pass_target(state, carrier, ai_target):
 #  PUNKTY 2 i 3 — starcie o piłkę (kontekst GROUND)
 # ══════════════════════════════════════════════════════════════════
 def patched_ground_duel(attacker, defender, attack, defence, rng):
+    # ZADANIE 2 — ekran duelu, tylko gdy w starciu bierze udział Human
+    if Human.owns(attacker) or Human.owns(defender):
+        show_duel_intro(pygame.display.get_surface(), attacker, defender,
+                         panel_width=PANEL_W)          # <-- DODANE panel_width
     # ── PUNKT 3: mój obrońca atakuje rywala z piłką ──
     if Human.owns(defender) and not Human.owns(attacker) and Human.is_controlling():
         order = [DefenceAction.VS_DRIBBLE, DefenceAction.VS_SHOT, DefenceAction.VS_PASS]
@@ -569,7 +573,10 @@ def main() -> None:
     field = Field()
     home = build_442(field, "Blues", Side.LEFT, "A")
     away = build_442(field, "Blacks", Side.RIGHT, "B")
+    register_teams(home, away)          # <-- DODANE — rejestr id(Player) -> Team dla panelu/duelu
     rng = Rng(seed=args.seed)
+
+
 
     Human.bind(home if args.side == "home" else away)
     Human.ask_air = not args.no_air

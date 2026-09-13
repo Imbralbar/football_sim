@@ -1,0 +1,107 @@
+{
+  "id": "BLACK",
+  "name": "Black",
+  "color": "#1cf452",
+  "skin_color": "#000000",
+  "players": [
+    {
+      "number": 1,
+      "shoes": "modul3_shoes.png",
+      "legs": "Modul2_legs.png",
+      "shorts": "modul3_shorts - Copy.png",
+      "jersey": "modul3_jersey.png",
+      "head": "head_05.png",
+      "hair": "Modul2_hair.png"
+    },
+    {
+      "number": 2,
+      "shoes": "shoes_01.png",
+      "legs": "modul3_legs.png",
+      "shorts": "modul5_shorts.png",
+      "jersey": "Modul2_jersey - Copy.png",
+      "head": "head_05.png",
+      "hair": "hair_04.png"
+    },
+    {
+      "number": 3,
+      "shoes": "Modul2_shoes.png",
+      "legs": "modul3_legs.png",
+      "shorts": "Modul2_shorts.png",
+      "jersey": "modul3_jersey.png",
+      "head": "modul3_head.png",
+      "hair": "hair_05.png"
+    },
+    {
+      "number": 4,
+      "shoes": "Modul1_shoes.png",
+      "legs": "Modul1_legs.png",
+      "shorts": "modul3_shorts - Copy.png",
+      "jersey": "modul3_jersey.png",
+      "head": "modul3_head.png",
+      "hair": "Modul2_hair.png"
+    },
+    {
+      "number": 5,
+      "shoes": "Modul1_shoes.png",
+      "legs": "Modul1_legs.png",
+      "shorts": "modul4_shorts - Copy (2).png",
+      "jersey": "modul5_jersey - Copy.png",
+      "head": "head_05.png",
+      "hair": "hair_05.png"
+    },
+    {
+      "number": 6,
+      "shoes": "shoes_01.png",
+      "legs": "modul3_legs.png",
+      "shorts": "Modul2_shorts.png",
+      "jersey": "Modul1_jersey.png",
+      "head": "head_04.png",
+      "hair": "Modul1_hair.png"
+    },
+    {
+      "number": 7,
+      "shoes": "Modul2_shoes.png",
+      "legs": "Modul1_legs.png",
+      "shorts": "Modul2_shorts.png",
+      "jersey": "Modul1_jersey.png",
+      "head": "Modul2_head.png",
+      "hair": "modul3_hair.png"
+    },
+    {
+      "number": 8,
+      "shoes": "Modul1_shoes.png",
+      "legs": "modul5_legs - Copy.png",
+      "shorts": "modul4_shorts - Copy (2).png",
+      "jersey": "Modul2_jersey - Copy.png",
+      "head": "modul3_head.png",
+      "hair": "Modul2_hair.png"
+    },
+    {
+      "number": 9,
+      "shoes": "shoes_04.png",
+      "legs": "modul4_legs - Copy (2).png",
+      "shorts": "Modul2_shorts.png",
+      "jersey": "modul5_jersey - Copy.png",
+      "head": "head_04.png",
+      "hair": "Modul1_hair.png"
+    },
+    {
+      "number": 10,
+      "shoes": "Modul2_shoes.png",
+      "legs": "modul5_legs - Copy.png",
+      "shorts": "Modul1_shorts.png",
+      "jersey": "modul3_jersey.png",
+      "head": "head_04.png",
+      "hair": "Modul2_hair.png"
+    },
+    {
+      "number": 11,
+      "shoes": "shoes_01.png",
+      "legs": "Modul2_legs.png",
+      "shorts": "Modul1_shorts.png",
+      "jersey": "Modul1_jersey.png",
+      "head": "modul3_head.png",
+      "hair": "hair_04.png"
+    }
+  ]
+}

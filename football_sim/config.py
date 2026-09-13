@@ -1,5 +1,8 @@
 """Wszystkie parametry gry w jednym miejscu."""
-
+import os
+PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))  # katalog gdzie leży config.py
+SPRITES_OUTPUT_DIR = os.path.join(PROJECT_ROOT, "sprites_output")
+DATA_DIR = os.path.join(PROJECT_ROOT, "data")
 # ---------- BOISKO ----------
 FIELD_W, FIELD_H = 25, 17
 PENALTY_DEPTH, PENALTY_H = 4, 11
@@ -117,3 +120,32 @@ GK_INITIAL_DRIBBLE_CHANCE   = 0.10  # 10% szans na próbę wybiegu zamiast podan
 GK_DRIBBLE_CHANCE_AFTER_WIN = 0.05  # po 1. wygranej: kolejna szansa = 5%, dalej x0.5 po każdej wygranej
 GK_DRIBBLE_MIN_CHANCE       = 0.01  # poniżej progu — bramkarz zawsze podaje
 GK_LOST_BALL_SHOT_BONUS     = 0.5   # +50% do shot_value dla zawodnika, który odebrał piłkę biegnącemu GK
+# ===== Career Panel (prawy dolny róg HUD) — zmniejszone, mieści się w pasie pod boiskiem =====
+CAREER_PANEL_WIDTH = 90
+CAREER_PANEL_HEIGHT = 64
+CAREER_PANEL_MARGIN = 6
+CAREER_PANEL_SPRITE_SCALE = 0.085
+CAREER_PANEL_BG_COLOR = (10, 60, 10)
+CAREER_PANEL_BORDER_COLOR = (20, 20, 20)
+CAREER_PANEL_BORDER_WIDTH = 2
+
+GRASS_STRIP_HEIGHT = 10
+GRASS_SCROLL_SPEED = 2
+GRASS_STRIPE_WIDTH = 14
+GRASS_COLOR_LIGHT = (46, 125, 50)
+GRASS_COLOR_DARK = (37, 105, 41)
+
+# ===== Duel intro screen =====
+DUEL_SCREEN_DURATION_MS = 1500
+DUEL_SPLIT_BG_COLOR = (15, 15, 15)
+DUEL_SPRITE_HEIGHT_RATIO = 0.65      # <-- ZASTĘPUJE DUEL_SPRITE_SCALE: % wysokości okna
+DUEL_SPRITE_BOTTOM_GAP = 40          # odstęp między stopami sprite'a a etykietą nazwiska
+DUEL_LABEL_MARGIN_BOTTOM = 30
+DUEL_LABEL_COLOR = (255, 255, 255)
+DUEL_VS_COLOR = (230, 30, 30)
+DUEL_DIVIDER_COLOR = (60, 60, 60)
+DUEL_BALL_RADIUS = 12
+DUEL_BALL_OFFSET_X = 45              # przesunięcie ikony piłki względem stóp atakującego
+DUEL_BALL_OFFSET_Y = 10
+
+TEAM_JSON_BY_COLOR_KEY = {"A": "BLUE.json", "B": "BLACK.json"}
