@@ -1,0 +1,1 @@
+python player.py --panel 300
