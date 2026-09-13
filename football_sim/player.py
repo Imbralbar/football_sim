@@ -1,30 +1,30 @@
 """
 player.py — tryb HUMAN vs AI dla Football Sim (v0.6)
 
-Uruchomienie:
-    python player.py                     # sterujesz Blues (home, Side.LEFT)
-    python player.py --side away
-    python player.py --seed 7
-    python player.py --no-air            # bez pytań o przechwyty w powietrzu
-    python player.py --panel 300         # węższa kolumna decyzji
+Uruchomienie (launcher rozdzielający __main__ od modułu — patrz manual.py):
+    python manual.py                     # sterujesz Blues (home, Side.LEFT)
+    python manual.py --side away
+    python manual.py --seed 7
+    python manual.py --no-air            # bez pytań o przechwyty w powietrzu
+    python manual.py --panel 300         # węższa kolumna decyzji
 
-Nie modyfikuje ŻADNEGO pliku silnika. Podmienia w locie 4 funkcje:
-    core.match.decide_action             -> punkt 1
-    core.match.resolve_ground_duel       -> punkty 2 i 3
-    core.rules.resolve_gk_save           -> punkty 4 i 5
-    core.rules.resolve_air_interception  -> punkt 6 (opcjonalny)
+WAŻNE: NIE uruchamiaj `python player.py` bezpośrednio. Powodowałoby to
+podwójny import modułu (__main__ + player), a wtedy klasa Human istnieje
+w DWÓCH kopiach — przełącznik A/P i guardy patchy czytają różne stany.
+Launcher manual.py ładuje player jako zwykły moduł → jedna kopia Human.
 
-RNG: wszystkie rzuty k10 zapadają WEWNĄTRZ resolverów, czyli PO Twoim
-wyborze. Determinizm seeda pozostaje nienaruszony.
-
-Decyzje rysowane są w osobnej kolumnie po PRAWEJ stronie okna —
-boisko pozostaje w pełni widoczne podczas wybierania.
+Przełączanie kontroli:
+    A  — oddaj sterowanie AI (AI_FULL). Działa i w modalu, i w biegu meczu.
+    P  — przejmij sterowanie (PLAYER_ACTIVE). Działa w biegu meczu.
+Oba klawisze są JEDNOKIERUNKOWE (set_ai / set_player), więc nie ma efektu
+podwójnego toggle, który blokował powrót do gracza.
 """
 from __future__ import annotations
 
 import argparse
 import sys
 from dataclasses import dataclass
+from enum import Enum
 
 import pygame
 
@@ -50,18 +50,21 @@ from render.pygame_view import PitchView
 # ══════════════════════════════════════════════════════════════════
 #  1. STAN STEROWNIKA
 # ══════════════════════════════════════════════════════════════════
-class Human:
-    """Kto jest 'mój' + log decyzji.
+class ControlMode(Enum):
+    """Stan kontroli w danym momencie."""
+    PLAYER_ACTIVE = "👤 PLAYER"       # Gracz kontroluje swój zespół
+    AI_FULL       = "⚙️  AI FULL"      # AI gra za grającego
 
-    Rozpoznawanie po id(), NIE po ==, bo Player jest dataclass
-    i porównanie == sprawdza pola (dwaj zawodnicy o tych samych
-    statystykach byliby 'równi').
-    """
+
+class Human:
+    """Kto jest 'mój' + log decyzji + tryb kontroli."""
 
     my_ids: set[int] = set()
     team_name: str = ""
     ask_air: bool = True
     log: list[str] = []
+    control_mode: ControlMode = ControlMode.PLAYER_ACTIVE
+    force_redecide: bool = False          # ← NOWE
 
     @classmethod
     def bind(cls, team: Team) -> None:
@@ -76,6 +79,26 @@ class Human:
     def note(cls, txt: str) -> None:
         cls.log.append(txt)
         print(f"   👤 {txt}")
+
+    @classmethod
+    def is_controlling(cls) -> bool:
+        """Czy gracz ma aktualnie kontrolę nad swoim zespołem?"""
+        return cls.control_mode == ControlMode.PLAYER_ACTIVE
+
+    @classmethod
+    def set_ai(cls) -> None:
+        """Wymuś tryb AI_FULL (klawisz A). Idempotentne."""
+        if cls.control_mode != ControlMode.AI_FULL:
+            cls.control_mode = ControlMode.AI_FULL
+            print(f"   🔄 Kontrola → {cls.control_mode.value}")
+
+    @classmethod
+    def set_player(cls) -> None:
+        """Wymuś tryb PLAYER_ACTIVE (klawisz P). Idempotentne."""
+        if cls.control_mode != ControlMode.PLAYER_ACTIVE:
+            cls.control_mode = ControlMode.PLAYER_ACTIVE
+            cls.force_redecide = True     # ← poproś silnik o ponowne pytanie
+            print(f"   🔄 Kontrola → {cls.control_mode.value}")
 
 
 # ══════════════════════════════════════════════════════════════════
@@ -96,24 +119,40 @@ COL_BAD     = (235, 120, 120)
 COL_FOOT    = (128, 132, 146)
 
 
+def draw_control_status(screen, position=(10, 10)):
+    """Rysuje bieżący stan kontroli w rogu ekranu."""
+    if screen is None:
+        return
+
+    try:
+        status_text = Human.control_mode.value
+    except Exception:
+        return
+
+    f_status = pygame.font.SysFont("consolas", 16, bold=True)
+    text_surf = f_status.render(status_text, True, (255, 255, 255))
+    bg_rect = text_surf.get_rect(topleft=position)
+    bg_rect.inflate_ip(16, 8)
+
+    col_bg = (50, 100, 60) if "PLAYER" in status_text else (80, 80, 120)
+    pygame.draw.rect(screen, col_bg, bg_rect)
+    pygame.draw.rect(screen, COL_BORDER, bg_rect, 2)
+
+    screen.blit(text_surf, position)
+
+
 @dataclass
 class Opt:
-    """Jedna opcja wyboru.
-
-    hotkey = cyfra POKAZANA w etykiecie i JEDNOCZEŚNIE wciskana na
-    klawiaturze. Dla akcji jest to kod z config.PAIRS (5/6/7, 2/3/4,
-    8/9), dla listy odbiorców podania — pozycja 1..9.
-    """
+    """Jedna opcja wyboru."""
     hotkey: int
     label: str
-    detail: str = ""       # np. "stat 15  •  dystans 4"
-    comment: str = ""      # np. "✓ -6 dla rywala"
+    detail: str = ""
+    comment: str = ""
     color: tuple = COL_OPT
 
 
 def _key_codes(digit: int) -> list[int]:
-    """Kody klawisza dla cyfry: górny rząd + klawiatura numeryczna.
-    Różne wersje pygame nazywają numpad K_KP5 albo K_KP_5 — bierzemy oba."""
+    """Kody klawisza dla cyfry: górny rząd + klawiatura numeryczna."""
     out = []
     for name in (f"K_{digit}", f"K_KP{digit}", f"K_KP_{digit}"):
         code = getattr(pygame, name, None)
@@ -135,18 +174,19 @@ def _wrap(txt: str, width: int) -> list[str]:
     return lines or [""]
 
 
-def modal(title: str, ai_line: str, options: list[Opt], default: int = 0) -> int:
+def modal(title: str, ai_line: str, options: list[Opt], default: int = 0) -> int | str:
     """Blokująca pętla wyboru = 'zamrożenie czasu'.
 
-    Silnik stoi w środku _tick_logic(); przerysowujemy zamrożoną klatkę
-    boiska i dorysowujemy kolumnę decyzji po prawej.
-    Zwraca INDEKS wybranej opcji. ESC = default (zostawia decyzję AI).
+    Zwraca:
+    - INDEKS opcji (int) — normalny wybór
+    - "AI" (str) — naciśnięto A: oddaj tę decyzję (i kolejne) AI
     """
     screen = pygame.display.get_surface()
     if screen is None:
         return _modal_console(title, ai_line, options, default)
 
     snap = screen.copy()
+    pygame.event.clear()          # ← wyrzuć zaległe zdarzenia (P/A z biegu gry)
     W, H = screen.get_size()
     px, pw = W - PANEL_W + 6, PANEL_W - 14
 
@@ -170,7 +210,11 @@ def modal(title: str, ai_line: str, options: list[Opt], default: int = 0) -> int
                 pygame.quit()
                 sys.exit(0)
             if ev.type == pygame.KEYDOWN:
-                if ev.key in hotmap:                    # ← cyfra = kod akcji
+                # A = oddaj sterowanie AI (jednokierunkowo) i zamknij modal
+                if ev.key == pygame.K_a:
+                    Human.set_ai()
+                    return "AI"
+                if ev.key in hotmap:                    # cyfra = kod akcji
                     return hotmap[ev.key]
                 if ev.key in (pygame.K_UP, pygame.K_LEFT):
                     idx = (idx - 1) % len(options)
@@ -222,7 +266,8 @@ def modal(title: str, ai_line: str, options: list[Opt], default: int = 0) -> int
             y += 10
 
         foot = ["↑↓  zmiana pozycji", "cyfra  wybór natychmiast",
-                "ENTER  zatwierdź", "ESC  zostaw decyzję AI"]
+                "ENTER  zatwierdź", "ESC  zostaw AI",
+                "A  oddaj sterowanie AI"]
         fy = H - 22 - 15 * len(foot)
         for line in foot:
             screen.blit(f_small.render(line, True, COL_FOOT), (px + 12, fy))
@@ -278,7 +323,15 @@ def pair_comment(paired: bool, i_am_defender: bool) -> tuple[str, tuple]:
 # ══════════════════════════════════════════════════════════════════
 def patched_decide_action(state, carrier):
     ai_decision, ai_target = _orig_decide_action(state, carrier)
-    if not Human.owns(carrier):
+
+    # ── DEBUG ────────────────────────────────────────────────
+    print(f"DEBUG decide: owns={Human.owns(carrier)}  "
+          f"controlling={Human.is_controlling()}  "
+          f"mode={Human.control_mode.value}  "
+          f"carrier=#{carrier.number} {carrier.side}")
+    # ─────────────────────────────────────────────────────────
+
+    if not Human.owns(carrier) or not Human.is_controlling():
         return ai_decision, ai_target
 
     opp_side = carrier.side.opposite().value
@@ -301,7 +354,10 @@ def patched_decide_action(state, carrier):
                + (f" → #{ai_target.number}" if ai_target else ""))
     title = f"⚽ MASZ PIŁKĘ — {tag(carrier)}  •  rywali blisko: {threats}"
 
-    choice = order[modal(title, ai_line, opts, order.index(ai_decision))]
+    result = modal(title, ai_line, opts, order.index(ai_decision))
+    if result == "AI":
+        return ai_decision, ai_target
+    choice = order[result]
 
     if choice is not AiDecision.PASS:
         Human.note(f"akcja: {choice.value}")
@@ -342,7 +398,11 @@ def choose_pass_target(state, carrier, ai_target):
 
     ai_line = (f"AI wybrało: #{ai_target.number}" if ai_target
                else "AI nie znalazło dobrego odbiorcy")
-    return mates[modal(f"🎯 ODBIORCA PODANIA od {tag(carrier)}", ai_line, opts, default)]
+
+    result = modal(f"🎯 ODBIORCA PODANIA od {tag(carrier)}", ai_line, opts, default)
+    if result == "AI":
+        return ai_target
+    return mates[result]
 
 
 # ══════════════════════════════════════════════════════════════════
@@ -350,7 +410,7 @@ def choose_pass_target(state, carrier, ai_target):
 # ══════════════════════════════════════════════════════════════════
 def patched_ground_duel(attacker, defender, attack, defence, rng):
     # ── PUNKT 3: mój obrońca atakuje rywala z piłką ──
-    if Human.owns(defender) and not Human.owns(attacker):
+    if Human.owns(defender) and not Human.owns(attacker) and Human.is_controlling():
         order = [DefenceAction.VS_DRIBBLE, DefenceAction.VS_SHOT, DefenceAction.VS_PASS]
         opts = []
         for d in order:
@@ -360,13 +420,17 @@ def patched_ground_duel(attacker, defender, attack, defence, rng):
         ai_line = (f"AI atakuje: {PL_ATTACK[attack]} ({int(attack)}), "
                    f"stat {attack_stat(attacker, attack)}")
         title = f"🛡 TWOJA OBRONA — {tag(defender)} vs {tag(attacker)}"
-        defence = order[modal(title, ai_line, opts, order.index(defence))]
+
+        result = modal(title, ai_line, opts, order.index(defence))
+        if result == "AI":
+            return _orig_ground_duel(attacker, defender, attack, defence, rng)
+        defence = order[result]
         Human.note(f"obrona {PL_DEF[defence]} vs {PL_ATTACK[attack]}")
 
     # ── PUNKT 2: mój zawodnik z piłką jest atakowany ──
-    elif Human.owns(attacker) and not Human.owns(defender):
+    elif Human.owns(attacker) and not Human.owns(defender) and Human.is_controlling():
         pool = [AttackAction.DRIBBLE, AttackAction.PASS]
-        if not attacker.is_gk:                    # GK nigdy nie strzela (actions.py)
+        if not attacker.is_gk:
             pool.insert(1, AttackAction.SHOT)
         opts = []
         for a in pool:
@@ -378,7 +442,11 @@ def patched_ground_duel(attacker, defender, attack, defence, rng):
         ai_line = (f"AI broni: {PL_DEF[defence]} ({int(defence)}), "
                    f"stat {defence_stat(defender, defence)}")
         title = f"⚔ ATAKUJĄ CIĘ — {tag(attacker)} vs {tag(defender)}"
-        attack = pool[modal(title, ai_line, opts, pool.index(AttackAction.DRIBBLE))]
+
+        result = modal(title, ai_line, opts, pool.index(AttackAction.DRIBBLE))
+        if result == "AI":
+            return _orig_ground_duel(attacker, defender, attack, defence, rng)
+        attack = pool[result]
         Human.note(f"atak {PL_ATTACK[attack]} vs obrona {PL_DEF[defence]}")
 
     return _orig_ground_duel(attacker, defender, attack, defence, rng)
@@ -392,7 +460,7 @@ def patched_gk_save(shooter, gk, shot_val, placement, gk_choice, rng):
     gk_choice = GkAction(gk_choice)
 
     # ── PUNKT 5: mój bramkarz broni ──
-    if Human.owns(gk):
+    if Human.owns(gk) and Human.is_controlling():
         order = [GkAction.PUNCH, GkAction.CATCH]
         opts = []
         for g in order:
@@ -403,11 +471,15 @@ def patched_gk_save(shooter, gk, shot_val, placement, gk_choice, rng):
             opts.append(Opt(int(g), PL_GK[g], det, cmt, col))
         ai_line = f"Strzał: {PL_PLACE[placement]} ({int(placement)}), wartość {shot_val}"
         title = f"🧤 TWÓJ BRAMKARZ {tag(gk)} vs {tag(shooter)}"
-        gk_choice = order[modal(title, ai_line, opts, order.index(gk_choice))]
+
+        result = modal(title, ai_line, opts, order.index(gk_choice))
+        if result == "AI":
+            return _orig_gk_save(shooter, gk, shot_val, placement, gk_choice, rng)
+        gk_choice = order[result]
         Human.note(f"bramkarz: {PL_GK[gk_choice]}")
 
     # ── PUNKT 4: mój strzelec sam na sam ──
-    elif Human.owns(shooter):
+    elif Human.owns(shooter) and Human.is_controlling():
         order = [ShotPlacement.POWER, ShotPlacement.PLACED]
         opts = []
         for pl in order:
@@ -417,7 +489,11 @@ def patched_gk_save(shooter, gk, shot_val, placement, gk_choice, rng):
         ai_line = (f"Bramkarz wybrał: {PL_GK[gk_choice]} ({int(gk_choice)}), "
                    f"stat {gk_stat(gk, gk_choice)}")
         title = f"🥅 SAM NA SAM — {tag(shooter)} vs bramkarz #{gk.number}"
-        placement = order[modal(title, ai_line, opts, order.index(placement))]
+
+        result = modal(title, ai_line, opts, order.index(placement))
+        if result == "AI":
+            return _orig_gk_save(shooter, gk, shot_val, placement, gk_choice, rng)
+        placement = order[result]
         Human.note(f"strzał {PL_PLACE[placement]} vs {PL_GK[gk_choice]}")
 
     return _orig_gk_save(shooter, gk, shot_val, placement, gk_choice, rng)
@@ -427,7 +503,8 @@ def patched_gk_save(shooter, gk, shot_val, placement, gk_choice, rng):
 #  PUNKT 6 — przechwyt na trajektorii (kontekst AIR)
 # ══════════════════════════════════════════════════════════════════
 def patched_air(attacker, defender, attack, defence, rng, attack_value=None):
-    if Human.ask_air and Human.owns(defender) and not Human.owns(attacker):
+    if (Human.ask_air and Human.owns(defender)
+            and not Human.owns(attacker) and Human.is_controlling()):
         order = [DefenceAction.VS_DRIBBLE, DefenceAction.VS_SHOT, DefenceAction.VS_PASS]
         opts = []
         for d in order:
@@ -438,7 +515,11 @@ def patched_air(attacker, defender, attack, defence, rng, attack_value=None):
         ai_line = (f"{PL_ATTACK[attack]} o wartości {val}  •  "
                    f"masz bonus +{C.AIR_INTERCEPT_BONUS} (piłka w powietrzu)")
         title = f"✋ PRZECHWYT — {tag(defender)} na trajektorii"
-        defence = order[modal(title, ai_line, opts, order.index(defence))]
+
+        result = modal(title, ai_line, opts, order.index(defence))
+        if result == "AI":
+            return _orig_air(attacker, defender, attack, defence, rng, attack_value)
+        defence = order[result]
         Human.note(f"przechwyt: {PL_DEF[defence]}")
 
     return _orig_air(attacker, defender, attack, defence, rng, attack_value)
@@ -448,11 +529,7 @@ def patched_air(attacker, defender, attack, defence, rng, attack_value=None):
 #  4. INSTALACJA PATCHY
 # ══════════════════════════════════════════════════════════════════
 def install() -> None:
-    """Podmienia nazwy TAM, GDZIE SĄ UŻYWANE.
-
-    match.py robi `from core.resolver import resolve_ground_duel`, więc
-    trzyma własne wiązanie nazwy — patchujemy core.match, nie core.resolver.
-    """
+    """Podmienia nazwy TAM, GDZIE SĄ UŻYWANE."""
     import core.match as m
     m.decide_action = patched_decide_action
     m.resolve_ground_duel = patched_ground_duel
@@ -511,7 +588,9 @@ def main() -> None:
 
     print(f"\n🎮 Sterujesz: {Human.team_name}  |  seed={args.seed}  |  ruch prowadzi AI")
     print("   Czas zatrzymuje się przy każdej Twojej decyzji.")
-    print("   Mecz: [SPACJA] pauza  [↑↓] prędkość  [ESC] wyjście\n")
+    print("   Mecz: [SPACJA] pauza  [↑↓] prędkość  [ESC] wyjście")
+    print("   Kontrola: [A] oddaj AI   [P] przejmij sterowanie")
+    print("   (uruchamiaj przez: python manual.py)\n")
 
     result = match.play_with_render(view)
 

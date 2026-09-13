@@ -151,11 +151,12 @@ class Match:
             final_state=self.state,
             total_actions=self.actions_played,
         )
-
     def play_with_render(self, renderer) -> MatchResult:
         """Rozgrywa mecz z wizualizacją pygame."""
+        import os
         import pygame
         from export.replay import capture_tick, export_replay
+        from player import Human, draw_control_status
 
         self._setup_kickoff(kicking_team=self.home, action_no=1)
 
@@ -173,34 +174,56 @@ class Match:
 
                 tick_history.append(capture_tick(self.state))
 
-                # ── pygame events ──────────────────────────────────────
+                # ── pygame events ──────────────────────────────────
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:
-                        running = False; break
+                        running = False
+                        break
                     elif event.type == pygame.KEYDOWN:
-                        if   event.key == pygame.K_ESCAPE: running = False; break
-                        elif event.key == pygame.K_SPACE:  paused = not paused
-                        elif event.key == pygame.K_UP:     speed = min(speed + 1, 10)
-                        elif event.key == pygame.K_DOWN:   speed = max(speed - 1, 1)
+                        # A = oddaj AI, P = przejmij sterowanie (jednokierunkowe)
+                        if event.key == pygame.K_a:
+                            Human.set_ai()
+                        elif event.key == pygame.K_p:
+                            Human.set_player()
+                        elif event.key == pygame.K_ESCAPE:
+                            running = False
+                            break
+                        elif event.key == pygame.K_SPACE:
+                            paused = not paused
+                        elif event.key == pygame.K_UP:
+                            speed = min(speed + 1, 10)
+                        elif event.key == pygame.K_DOWN:
+                            speed = max(speed - 1, 1)
 
                 if not running:
                     break
 
                 if not paused:
+                    # Gracz właśnie przejął ster — pozwól zdecydować w tej akcji
+                    if Human.force_redecide:
+                        self._ai_decided_this_action = False
+                        Human.force_redecide = False
+
                     self._tick_logic()
 
                 self._render(renderer, action, tick, paused, speed)
+
+                # Status kontroli (nakładka w rogu ekranu)
+                screen = pygame.display.get_surface()
+                if screen is not None:
+                    draw_control_status(screen, position=(10, 10))
+
                 pygame.display.flip()
                 renderer.clock.tick(30 * speed)
 
-            # ═══════════════ RECORDER: koniec akcji ═══════════════
+            # koniec akcji — recorder
             if self.record_notation:
                 self.notation.record_action_end(action, self.home_score, self.away_score)
-            # ════════════════════════════════════════════════════════
 
             if not running:
                 break
 
+        # ═══════════════ KONIEC MECZU (POZA pętlą for action) ═══════════════
         print(f"\n🏁 KONIEC MECZU!")
         print(f"{self.home.name} {self.home_score} - {self.away_score} {self.away.name}")
 
@@ -214,17 +237,14 @@ class Match:
             total_actions=90,
         )
 
-        import os
         os.makedirs("replays", exist_ok=True)
         replay_path = f"replays/match_seed{self.rng.seed}.json"
         export_replay(result, tick_history, self.rng.seed, replay_path)
         print(f"📁 Replay zapisany: {replay_path}")
 
-        # ═══════════════ RECORDER: zapis pliku .cn ═══════════════
         if self.record_notation:
             self.notation.save(f"replays/match_seed{self.rng.seed}.cn")
             print(f"📝 Notacja zapisana: replays/match_seed{self.rng.seed}.cn")
-        # ══════════════════════════════════════════════════════════
 
         return result
 
